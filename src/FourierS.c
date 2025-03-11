@@ -37,14 +37,14 @@ void CFT(double complex *Fourier, const double *muestras, const int n, const dou
         //Aqui ya entra en juego tanto el intervalo del tiempo como los valores que dan la funcion, es decir el tiempo esta entre -1 y 1
         //y los valores de la funcion están en mis muestras
         //Vamos desde el minimo hasta el maximo pero con nuestro paso temporal para tomar fourier lo más preciso posible
-        for (double j = T_MIN;j<=T_MAX;j= j+paso_temporal){
+        for (double j = T_MIN;j<T_MAX; j= j+paso_temporal){
             //printf("Estoy en el segundo FOR");
             //Dudas a como acceder con el paso temporal, preguntar a Pablo
             int indice = (int)((j - T_MIN)/paso_temporal);
             if (indice <= 0 ){
                 //Si es menor o igual a 0 suponemos que coge el primer elemento
                 Fourier[i] += muestras[0]*cexp(-I*omega*j) * paso_temporal;
-            }else if (indice >= n){ 
+            }else if (indice >= n-1){ 
                 //Si es mayor o igual al numero de elemnto que hay, se coge el ultimo
                 Fourier[i] += muestras[n-1]*cexp(-I*omega*j) * paso_temporal;
             }else{
@@ -145,9 +145,9 @@ int main (){
         clock_t fin_cont = clock();
         double tiempo_cont = (double)(fin_cont-inicio_cont)/CLOCKS_PER_SEC;
         fprintf(salida_cont,"%d %lf\n",Tam_Vector_muestras,tiempo_cont);
-        for (int i=0;i<Tam_Vector_muestras;i++){
+        /*for (int i=0;i<Tam_Vector_muestras;i++){
             fprintf(salida_cont,"%lf %lf\n",creal(Fourier_cont[i]),cimag(Fourier_cont[i]));
-        }
+        }*/
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         free(muestras);

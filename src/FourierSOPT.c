@@ -90,7 +90,7 @@ void CFT(double complex *Fourier, const double *muestras, const int n, const dou
         //Aqui ya entra en juego tanto el intervalo del tiempo como los valores que dan la funcion, es decir el tiempo esta entre -1 y 1
         //y los valores de la funcion están en mis muestras
         //Vamos desde el minimo hasta el maximo pero con nuestro paso temporal para tomar fourier lo más preciso posible
-        for (double j = T_MIN;j<=T_MAX;j+=paso_temporal*4){
+        for (double j = T_MIN;j<T_MAX;j+=paso_temporal*4){
             //printf("Estoy en el segundo FOR");
             //Dudas a como acceder con el paso temporal, preguntar a Pablo
             
@@ -144,6 +144,7 @@ void CFT(double complex *Fourier, const double *muestras, const int n, const dou
                 //Si no es valido y cogemos el valor calculado
                 Fourier[i] += muestras[indice4]*cexp(-I*omega*(j+(3*paso_temporal))) * paso_temporal;
             }
+
 
             //Para i+1
 
@@ -205,35 +206,35 @@ void CFT(double complex *Fourier, const double *muestras, const int n, const dou
 
             if (indice2 <= 0 ){
                 //Si es menor o igual a 0 suponemos que coge el primer elemento
-                Fourier[i+2] += muestras[0]*cexp(-I*omega3*(j+1)) * paso_temporal;
+                Fourier[i+2] += muestras[0]*cexp(-I*omega3*(j+paso_temporal)) * paso_temporal;
             }else if (indice2 >= n){ 
                 //Si es mayor o igual al numero de elemnto que hay, se coge el ultimo
-                Fourier[i+2] += muestras[n-1]*cexp(-I*omega3*(j+1)) * paso_temporal;
+                Fourier[i+2] += muestras[n-1]*cexp(-I*omega3*(j+paso_temporal)) * paso_temporal;
             }else{
                 //Si no es valido y cogemos el valor calculado
-                Fourier[i+2] += muestras[indice2]*cexp(-I*omega3*(j+1)) * paso_temporal;
+                Fourier[i+2] += muestras[indice2]*cexp(-I*omega3*(j+paso_temporal)) * paso_temporal;
             }
 
             if (indice3 <= 0 ){
                 //Si es menor o igual a 0 suponemos que coge el primer elemento
-                Fourier[i+2] += muestras[0]*cexp(-I*omega3*(j+2)) * paso_temporal;
+                Fourier[i+2] += muestras[0]*cexp(-I*omega3*(j+(2*paso_temporal))) * paso_temporal;
             }else if (indice3 >= n){ 
                 //Si es mayor o igual al numero de elemnto que hay, se coge el ultimo
-                Fourier[i+2] += muestras[n-1]*cexp(-I*omega3*(j+2)) * paso_temporal;
+                Fourier[i+2] += muestras[n-1]*cexp(-I*omega3*(j+(2*paso_temporal))) * paso_temporal;
             }else{
                 //Si no es valido y cogemos el valor calculado
-                Fourier[i+2] += muestras[indice3]*cexp(-I*omega3*(j+2)) * paso_temporal;
+                Fourier[i+2] += muestras[indice3]*cexp(-I*omega3*(j+(2*paso_temporal))) * paso_temporal;
             }
 
             if (indice4 <= 0 ){
                 //Si es menor o igual a 0 suponemos que coge el primer elemento
-                Fourier[i+2] += muestras[0]*cexp(-I*omega3*(j+3)) * paso_temporal;
+                Fourier[i+2] += muestras[0]*cexp(-I*omega3*(j+(3*paso_temporal))) * paso_temporal;
             }else if (indice4 >= n){ 
                 //Si es mayor o igual al numero de elemnto que hay, se coge el ultimo
-                Fourier[i+2] += muestras[n-1]*cexp(-I*omega3*(j+3)) * paso_temporal;
+                Fourier[i+2] += muestras[n-1]*cexp(-I*omega3*(j+(3*paso_temporal))) * paso_temporal;
             }else{
                 //Si no es valido y cogemos el valor calculado
-                Fourier[i+2] += muestras[indice4]*cexp(-I*omega3*(j+3)) * paso_temporal;
+                Fourier[i+2] += muestras[indice4]*cexp(-I*omega3*(j+(3*paso_temporal))) * paso_temporal;
             }
 
 
@@ -251,35 +252,35 @@ void CFT(double complex *Fourier, const double *muestras, const int n, const dou
 
             if (indice2 <= 0 ){
                 //Si es menor o igual a 0 suponemos que coge el primer elemento
-                Fourier[i+3] += muestras[0]*cexp(-I*omega4*(j+1)) * paso_temporal;
+                Fourier[i+3] += muestras[0]*cexp(-I*omega4*(j+paso_temporal)) * paso_temporal;
             }else if (indice2 >= n){ 
                 //Si es mayor o igual al numero de elemnto que hay, se coge el ultimo
-                Fourier[i+3] += muestras[n-1]*cexp(-I*omega4*(j+1)) * paso_temporal;
+                Fourier[i+3] += muestras[n-1]*cexp(-I*omega4*(j+paso_temporal)) * paso_temporal;
             }else{
                 //Si no es valido y cogemos el valor calculado
-                Fourier[i+3] += muestras[indice2]*cexp(-I*omega4*(j+1)) * paso_temporal;
+                Fourier[i+3] += muestras[indice2]*cexp(-I*omega4*(j+paso_temporal)) * paso_temporal;
             }
 
             if (indice3 <= 0 ){
                 //Si es menor o igual a 0 suponemos que coge el primer elemento
-                Fourier[i+3] += muestras[0]*cexp(-I*omega4*(j+2)) * paso_temporal;
+                Fourier[i+3] += muestras[0]*cexp(-I*omega4*(j+(2*paso_temporal))) * paso_temporal;
             }else if (indice3 >= n){ 
                 //Si es mayor o igual al numero de elemnto que hay, se coge el ultimo
-                Fourier[i+3] += muestras[n-1]*cexp(-I*omega4*(j+2)) * paso_temporal;
+                Fourier[i+3] += muestras[n-1]*cexp(-I*omega4*(j+(2*paso_temporal))) * paso_temporal;
             }else{
                 //Si no es valido y cogemos el valor calculado
-                Fourier[i+3] += muestras[indice3]*cexp(-I*omega4*(j+2)) * paso_temporal;
+                Fourier[i+3] += muestras[indice3]*cexp(-I*omega4*(j+(2*paso_temporal))) * paso_temporal;
             }
 
             if (indice4 <= 0 ){
                 //Si es menor o igual a 0 suponemos que coge el primer elemento
-                Fourier[i+3] += muestras[0]*cexp(-I*omega4*(j+3)) * paso_temporal;
+                Fourier[i+3] += muestras[0]*cexp(-I*omega4*(j+(3*paso_temporal))) * paso_temporal;
             }else if (indice4 >= n){ 
                 //Si es mayor o igual al numero de elemnto que hay, se coge el ultimo
-                Fourier[i+3] += muestras[n-1]*cexp(-I*omega4*(j+3)) * paso_temporal;
+                Fourier[i+3] += muestras[n-1]*cexp(-I*omega4*(j+(3*paso_temporal))) * paso_temporal;
             }else{
                 //Si no es valido y cogemos el valor calculado
-                Fourier[i+3] += muestras[indice4]*cexp(-I*omega4*(j+3)) * paso_temporal;
+                Fourier[i+3] += muestras[indice4]*cexp(-I*omega4*(j+(3*paso_temporal))) * paso_temporal;
             }
 
         }
@@ -358,9 +359,9 @@ int main (){
         //El tiempo se pasa en ms
         fprintf(salida,"%d %lf\n",Tam_Vector_muestras,tiempo);
         //Para mostrar el vector, esta dentro del archivo 😴😴
-        for (int i=0;i<Tam_Vector_muestras;i++){
+        /*for (int i=0;i<Tam_Vector_muestras;i++){
             fprintf(salida,"%lf %lf\n",creal(Fourier[i]),cimag(Fourier[i]));
-        }
+        }*/
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Parte de CFT
@@ -369,15 +370,15 @@ int main (){
         //printf("valor tmax - tmin %d\n",T_MAX-T_MIN);
         //printf("valor paso temporal %f\n", (double)(T_MAX-T_MIN) / Tam_Vector_muestras);
         double paso_temporal = (double)(T_MAX-T_MIN) / Tam_Vector_muestras;
-        printf("Valor paso temporal: %f\n",paso_temporal);
+        //printf("Valor paso temporal: %f\n",paso_temporal);
         clock_t inicio_cont = clock();
         CFT(Fourier_cont,muestras,Tam_Vector_muestras,paso_temporal);
         clock_t fin_cont = clock();
         double tiempo_cont = (double)(fin_cont-inicio_cont)/CLOCKS_PER_SEC;
         fprintf(salida_cont,"%d %lf\n",Tam_Vector_muestras,tiempo_cont);
-        for (int i=0;i<Tam_Vector_muestras;i++){
+        /*for (int i=0;i<Tam_Vector_muestras;i++){
             fprintf(salida_cont,"%lf %lf\n",creal(Fourier_cont[i]),cimag(Fourier_cont[i]));
-        }
+        }*/
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         free(muestras);
