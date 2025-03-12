@@ -309,8 +309,8 @@ const char * SALIDA_CONTINUO2 = "txt/ContinuoDFT2.txt"; //salida continuo ðŸ¤¯ðŸ
 
 int main (){
     FILE * entrada = fopen (FUNCIONA,"r");
-    FILE * salida = fopen(SALIDA,"w");
-    FILE * salida_cont = fopen(SALIDA_CONTINUO,"w");
+    FILE * salida = fopen(SALIDA2,"w");
+    FILE * salida_cont = fopen(SALIDA_CONTINUO2,"w");
 
     if (!entrada){
         printf("Error: No se pudo abrir el archivo de entrada\n");
@@ -338,6 +338,10 @@ int main (){
             exit(1);
         }
         if (!Fourier){
+            printf("Error: No se pudo asignar memoria Fourier\n");
+            exit(1);
+        }
+        if (!Fourier_cont){
             printf("Error: No se pudo asignar memoria Fourier\n");
             exit(1);
         }
@@ -383,6 +387,7 @@ int main (){
 
         free(muestras);
         free(Fourier);
+        free(Fourier_cont);
 
     }
 

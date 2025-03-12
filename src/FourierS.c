@@ -110,6 +110,10 @@ int main (){
             printf("Error: No se pudo asignar memoria Fourier\n");
             exit(1);
         }
+        if (!Fourier_cont){
+            printf("Error: No se pudo asignar memoria Fourier\n");
+            exit(1);
+        }
 
         for (int i=0;i<Tam_Vector_muestras;i++){
             if (fscanf(entrada,"%lf",&muestras[i]) != 1){
@@ -152,6 +156,7 @@ int main (){
 
         free(muestras);
         free(Fourier);
+        free(Fourier_cont);
 
     }
 
