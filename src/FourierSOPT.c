@@ -300,17 +300,20 @@ const char * DISTINTAS20 = "txt/muestras.txt"; //20.000 muestras de elementos al
 const char * FUNCIONA = "txt/funciona.txt"; //muestras de funcionamiento 😎😎
 const char * FUNCIONA2 = "txt/funciona2.txt"; //muestras de funcionamiento 😎😎
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const char * SALIDA = "txt/SecuencialDFT.txt"; //salida secuencial (cualquier caso) 😇😇
-const char * SALIDA2 = "txt/SecuencialDFT.txt"; //salida secuencial para el caso de 20.000 muestras 😇😇
-const char * SALIDA_CONTINUO = "txt/ContinuoDFT.txt"; //salida continuo 🤯🤯
-const char * SALIDA_CONTINUO2 = "txt/ContinuoDFT2.txt"; //salida continuo 🤯🤯
+const char * SALIDA = "txt/SecuencialDFTOPT.txt"; //salida secuencial (cualquier caso) 😇😇
+const char * SALIDA2 = "txt/SecuencialDFT2OPT.txt"; //salida secuencial para el caso de 20.000 muestras 😇😇
+const char * SALIDA_CONTINUO = "txt/ContinuoDFTOPT.txt"; //salida continuo 🤯🤯
+const char * SALIDA_CONTINUO2 = "txt/ContinuoDFTOPT2.txt"; //salida continuo 🤯🤯
+const char * SALIDA_CONTINUO2 = "txt/ContinuoDFTOPT3.txt"; //salida continuo 🤯🤯
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 int main (){
-    FILE * entrada = fopen (FUNCIONA,"r");
-    FILE * salida = fopen(SALIDA2,"w");
-    FILE * salida_cont = fopen(SALIDA_CONTINUO2,"w");
+    FILE * entrada = fopen (TREINTAMIL,"r");
+    FILE * salida = fopen(SALIDA,"w");
+    FILE * salida_cont = fopen(SALIDA_CONTINUO,"w");
+    FILE * salida_cont2 = fopen(SALIDA_CONTINUO2,"w");
+    FILE * salida_cont3 = fopen(SALIDA_CONTINUO2,"w");
 
     if (!entrada){
         printf("Error: No se pudo abrir el archivo de entrada\n");
@@ -325,6 +328,14 @@ int main (){
         printf("Error: No se pudo abrir el archivo de salida continuo\n");
         exit(1);
     }
+    if (!salida_cont2){
+        printf("Error: No se pudo abrir el archivo de salida continuo\n");
+        exit(1);
+    }
+    if (!salida_cont3){
+        printf("Error: No se pudo abrir el archivo de salida continuo\n");
+        exit(1);
+    }
     
     int Tam_Vector_muestras;
     while (fscanf(entrada,"%d",&Tam_Vector_muestras) == 1){
@@ -332,6 +343,8 @@ int main (){
         double *muestras = malloc(Tam_Vector_muestras*sizeof(double));
         double complex *Fourier = malloc(Tam_Vector_muestras*sizeof(double complex));
         double complex *Fourier_cont = malloc(Tam_Vector_muestras*sizeof(double complex));
+        double complex *Fourier_cont2 = malloc(Tam_Vector_muestras*sizeof(double complex));
+        double complex *Fourier_cont3 = malloc(Tam_Vector_muestras*sizeof(double complex));
         
         if (!muestras){
             printf("Error: No se pudo asignar memoria muestras\n");
@@ -342,6 +355,14 @@ int main (){
             exit(1);
         }
         if (!Fourier_cont){
+            printf("Error: No se pudo asignar memoria Fourier\n");
+            exit(1);
+        }
+        if (!Fourier_cont2){
+            printf("Error: No se pudo asignar memoria Fourier\n");
+            exit(1);
+        }
+        if (!Fourier_cont3){
             printf("Error: No se pudo asignar memoria Fourier\n");
             exit(1);
         }
@@ -388,15 +409,21 @@ int main (){
         free(muestras);
         free(Fourier);
         free(Fourier_cont);
+        free(Fourier_cont2);
+        free(Fourier_cont3);
 
     }
 
     fclose(entrada);
     fclose(salida);
     fclose(salida_cont);
+    fclose(salida_cont2);
+    fclose(salida_cont3);
 
-    printf("Fin del programa, resultados guardados con formato NumeroMuestras Tiempo(Fourier Discreto) en salidaDFT\n");
-    printf("Fin del programa, resultados guardados con formato NumeroMuestras Tiempo(Fourier continuo) en salidaCFT\n");
+    printf("Fin del programa, resultados guardados con formato NumeroMuestras Tiempo(Fourier Discreto) en salidaDFTOPT\n");
+    printf("Fin del programa, resultados guardados con formato NumeroMuestras Tiempo(Fourier continuo) en salidaCFTOPT\n");
+    printf("Fin del programa, resultados guardados con formato NumeroMuestras Tiempo(Fourier continuo Simpson) en salidaCFTOPT\n");
+    printf("Fin del programa, resultados guardados con formato NumeroMuestras Tiempo(Fourier continuo Trapezio) en salidaCFTOPT\n");
 
     return 0;
     
