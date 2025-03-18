@@ -287,6 +287,257 @@ void CFT(double complex *Fourier, const double *muestras, const int n, const dou
     }    
 }
 
+/*
+void CFT_Simpson(double complex *Fourier, const double *muestras, const int n, const double paso_temporal) {
+    for (int i = 0; i < n; i += 4) {
+        double omega0 = 2.0 * PI * (i) / (T_MAX - T_MIN);
+        double omega1 = 2.0 * PI * (i + 1) / (T_MAX - T_MIN);
+        double omega2 = 2.0 * PI * (i + 2) / (T_MAX - T_MIN);
+        double omega3 = 2.0 * PI * (i + 3) / (T_MAX - T_MIN);
+        
+        Fourier[i] = 0.0 + 0.0 * I;
+        Fourier[i + 1] = 0.0 + 0.0 * I;
+        Fourier[i + 2] = 0.0 + 0.0 * I;
+        Fourier[i + 3] = 0.0 + 0.0 * I;
+        
+        for (double j = T_MIN; j < T_MAX - paso_temporal*4; j += paso_temporal*4) {
+            
+            //i
+            
+            int indice1 = (int)((j - T_MIN) / paso_temporal);
+            int indice11 = (int)((j+paso_temporal - T_MIN) / paso_temporal);
+            int indice12 = (int)((j+(2*paso_temporal) - T_MIN) /paso_temporal);
+            int indice13 = (int)((j+(3*paso_temporal) - T_MIN) /paso_temporal);
+
+            int indice2 = indice1 + 1;
+            int indice210 = indice11 + 1;
+            int indice220 = indice12 + 1;
+            int indice230 = indice13 + 1;
+            
+            if (indice2 >= n) indice2 = n - 1;
+            if (indice210 >= n) indice210 = n - 1;
+            if (indice220 >= n) indice220 = n - 1;
+            if (indice230 >= n) indice230 = n - 1;
+            
+            double x_medio = j + paso_temporal / 2.0;
+            double x_medio1 = j+paso_temporal + paso_temporal / 2.0;
+            double x_medio2 = j+(2*paso_temporal) + paso_temporal / 2.0;
+            double x_medio3 = j+(3*paso_temporal) + paso_temporal / 2.0;
+
+            int indice_medio = (int)((x_medio - T_MIN) / paso_temporal);
+            int indice_medio1 = (int)((x_medio1 - T_MIN) / paso_temporal);
+            int indice_medio2 = (int)((x_medio2 - T_MIN) / paso_temporal);
+            int indice_medio3 = (int)((x_medio3 - T_MIN) / paso_temporal);
+            
+            if (indice_medio >= n) indice_medio = n - 1;
+            if (indice_medio1 >= n) indice_medio1 = n - 1;
+            if (indice_medio2 >= n) indice_medio2 = n - 1;
+            if (indice_medio3 >= n) indice_medio3 = n - 1;
+            
+            double simpson = (muestras[indice1] + 4.0 * muestras[indice_medio] + muestras[indice2]) / 6.0;
+            double simpson1 = (muestras[indice11] + 4.0 * muestras[indice_medio1] + muestras[indice210]) / 6.0;
+            double simpson2 = (muestras[indice12] + 4.0 * muestras[indice_medio2] + muestras[indice220]) / 6.0;
+            double simpson3 = (muestras[indice13] + 4.0 * muestras[indice_medio3] + muestras[indice230]) /6.0;
+            
+            Fourier[i] += simpson * cexp(-I * omega0 * j) * paso_temporal;
+            Fourier[i] += simpson1 * cexp(-I * omega0 * (j+paso_temporal)) * paso_temporal;
+            Fourier[i] += simpson2 * cexp(-I * omega0 * (j+2*paso_temporal)) * paso_temporal;
+            Fourier[i] += simpson3 * cexp(-I * omega0 * (j+3*paso_temporal)) * paso_temporal;
+
+            //i+1
+            int indice011 = (int)((j - T_MIN) / paso_temporal);
+            int indice111 = (int)((j+paso_temporal - T_MIN) / paso_temporal);
+            int indice121 = (int)((j+(2*paso_temporal) - T_MIN) /paso_temporal);
+            int indice131 = (int)((j+(3*paso_temporal) - T_MIN) /paso_temporal);
+
+            int indice21 = indice011 + 1;
+            int indice211 = indice111 + 1;
+            int indice221 = indice121 + 1;
+            int indice231 = indice131 + 1;
+            
+            if (indice21 >= n) indice21 = n - 1;
+            if (indice211 >= n) indice211 = n - 1;
+            if (indice221 >= n) indice221 = n - 1;
+            if (indice231 >= n) indice231 = n - 1;
+            
+            double x_medio0 = j + paso_temporal / 2.0;
+            double x_medio11 = j+paso_temporal + paso_temporal / 2.0;
+            double x_medio21 = j+(2*paso_temporal) + paso_temporal / 2.0;
+            double x_medio31 = j+(3*paso_temporal) + paso_temporal / 2.0;
+
+            int indice_medio0 = (int)((x_medio0 - T_MIN) / paso_temporal);
+            int indice_medio11 = (int)((x_medio11 - T_MIN) / paso_temporal);
+            int indice_medio21 = (int)((x_medio21 - T_MIN) / paso_temporal);
+            int indice_medio31 = (int)((x_medio31 - T_MIN) / paso_temporal);
+            
+            if (indice_medio0 >= n) indice_medio0 = n - 1;
+            if (indice_medio11 >= n) indice_medio11 = n - 1;
+            if (indice_medio21 >= n) indice_medio21 = n - 1;
+            if (indice_medio31 >= n) indice_medio31 = n - 1;
+            
+            double simpson0 = (muestras[indice011] + 4.0 * muestras[indice_medio0] + muestras[indice21]) / 6.0;
+            double simpson11 = (muestras[indice111] + 4.0 * muestras[indice_medio11] + muestras[indice211]) / 6.0;
+            double simpson21 = (muestras[indice121] + 4.0 * muestras[indice_medio21] + muestras[indice221]) / 6.0;
+            double simpson31 = (muestras[indice131] + 4.0 * muestras[indice_medio31] + muestras[indice231]) /6.0;
+            
+            Fourier[i+1] += simpson0 * cexp(-I * omega1 * j) * paso_temporal;
+            Fourier[i+1] += simpson11 * cexp(-I * omega1 * (j+paso_temporal)) * paso_temporal;
+            Fourier[i+1] += simpson21 * cexp(-I * omega1 * (j+2*paso_temporal)) * paso_temporal;
+            Fourier[i+1] += simpson31 * cexp(-I * omega1 * (j+3*paso_temporal)) * paso_temporal;
+
+
+            //i+2
+            int indice012 = (int)((j - T_MIN) / paso_temporal);
+            int indice112 = (int)((j+paso_temporal - T_MIN) / paso_temporal);
+            int indice122 = (int)((j+(2*paso_temporal) - T_MIN) /paso_temporal);
+            int indice132 = (int)((j+(3*paso_temporal) - T_MIN) /paso_temporal);
+
+            int indice22 = indice012 + 1;
+            int indice212 = indice112 + 1;
+            int indice222 = indice122 + 1;
+            int indice232 = indice132 + 1;
+            
+            if (indice22 >= n) indice22 = n - 1;
+            if (indice212 >= n) indice212 = n - 1;
+            if (indice222 >= n) indice222 = n - 1;
+            if (indice232 >= n) indice232 = n - 1;
+            
+            double x_medio02 = j + paso_temporal / 2.0;
+            double x_medio12 = j+paso_temporal + paso_temporal / 2.0;
+            double x_medio22 = j+(2*paso_temporal) + paso_temporal / 2.0;
+            double x_medio32 = j+(3*paso_temporal) + paso_temporal / 2.0;
+
+            int indice_medio02 = (int)((x_medio02 - T_MIN) / paso_temporal);
+            int indice_medio12 = (int)((x_medio12 - T_MIN) / paso_temporal);
+            int indice_medio22 = (int)((x_medio22 - T_MIN) / paso_temporal);
+            int indice_medio32 = (int)((x_medio32 - T_MIN) / paso_temporal);
+            
+            if (indice_medio02 >= n) indice_medio02 = n - 1;
+            if (indice_medio12 >= n) indice_medio12 = n - 1;
+            if (indice_medio22 >= n) indice_medio22 = n - 1;
+            if (indice_medio32 >= n) indice_medio32 = n - 1;
+            
+            double simpson02 = (muestras[indice012] + 4.0 * muestras[indice_medio02] + muestras[indice22]) / 6.0;
+            double simpson12 = (muestras[indice112] + 4.0 * muestras[indice_medio12] + muestras[indice212]) / 6.0;
+            double simpson22 = (muestras[indice122] + 4.0 * muestras[indice_medio22] + muestras[indice222]) / 6.0;
+            double simpson32 = (muestras[indice132] + 4.0 * muestras[indice_medio32] + muestras[indice232]) /6.0;
+            
+            Fourier[i+2] += simpson02 * cexp(-I * omega2 * j) * paso_temporal;
+            Fourier[i+2] += simpson12 * cexp(-I * omega2 * (j+paso_temporal)) * paso_temporal;
+            Fourier[i+2] += simpson22 * cexp(-I * omega2 * (j+2*paso_temporal)) * paso_temporal;
+            Fourier[i+2] += simpson32 * cexp(-I * omega2 * (j+3*paso_temporal)) * paso_temporal;
+
+
+
+
+            //i+3
+            int indice013 = (int)((j - T_MIN) / paso_temporal);
+            int indice113 = (int)((j+paso_temporal - T_MIN) / paso_temporal);
+            int indice123 = (int)((j+(2*paso_temporal) - T_MIN) /paso_temporal);
+            int indice133 = (int)((j+(3*paso_temporal) - T_MIN) /paso_temporal);
+
+            int indice23 = indice013 + 1;
+            int indice213 = indice113 + 1;
+            int indice223 = indice123 + 1;
+            int indice233 = indice133 + 1;
+            
+            if (indice23 >= n) indice23 = n - 1;
+            if (indice213 >= n) indice213 = n - 1;
+            if (indice223 >= n) indice223 = n - 1;
+            if (indice233 >= n) indice233 = n - 1;
+            
+            double x_medio03 = j + paso_temporal / 2.0;
+            double x_medio13 = j+paso_temporal + paso_temporal / 2.0;
+            double x_medio23 = j+(2*paso_temporal) + paso_temporal / 2.0;
+            double x_medio33 = j+(3*paso_temporal) + paso_temporal / 2.0;
+
+            int indice_medio03 = (int)((x_medio03 - T_MIN) / paso_temporal);
+            int indice_medio13 = (int)((x_medio13 - T_MIN) / paso_temporal);
+            int indice_medio23 = (int)((x_medio23 - T_MIN) / paso_temporal);
+            int indice_medio33 = (int)((x_medio33 - T_MIN) / paso_temporal);
+            
+            if (indice_medio03 >= n) indice_medio03 = n - 1;
+            if (indice_medio13 >= n) indice_medio13 = n - 1;
+            if (indice_medio23 >= n) indice_medio2 = n - 1;
+            if (indice_medio33 >= n) indice_medio33 = n - 1;
+            
+            double simpson03 = (muestras[indice013] + 4.0 * muestras[indice_medio03] + muestras[indice23]) / 6.0;
+            double simpson13 = (muestras[indice113] + 4.0 * muestras[indice_medio13] + muestras[indice213]) / 6.0;
+            double simpson23 = (muestras[indice123] + 4.0 * muestras[indice_medio23] + muestras[indice223]) / 6.0;
+            double simpson33 = (muestras[indice133] + 4.0 * muestras[indice_medio33] + muestras[indice233]) /6.0;
+            
+            Fourier[i+3] += simpson03 * cexp(-I * omega3 * j) * paso_temporal;
+            Fourier[i+3] += simpson13 * cexp(-I * omega3 * (j+paso_temporal)) * paso_temporal;
+            Fourier[i+3] += simpson23 * cexp(-I * omega3 * (j+2*paso_temporal)) * paso_temporal;
+            Fourier[i+3] += simpson33 * cexp(-I * omega3 * (j+3*paso_temporal)) * paso_temporal;
+
+
+        }
+    }
+}*/
+
+void CFT_Simpson(double complex *Fourier, const double *muestras, const int n, const double paso_temporal) {
+    for (int i = 0; i < n; i += 4) {
+        double omega0 = 2.0 * PI * (i) / (T_MAX - T_MIN);
+        double omega1 = 2.0 * PI * (i + 1) / (T_MAX - T_MIN);
+        double omega2 = 2.0 * PI * (i + 2) / (T_MAX - T_MIN);
+        double omega3 = 2.0 * PI * (i + 3) / (T_MAX - T_MIN);
+        
+        Fourier[i] = 0.0 + 0.0 * I;
+        Fourier[i + 1] = 0.0 + 0.0 * I;
+        Fourier[i + 2] = 0.0 + 0.0 * I;
+        Fourier[i + 3] = 0.0 + 0.0 * I;
+        
+        for (double j = T_MIN; j < T_MAX - paso_temporal; j += paso_temporal) {
+            int indice1 = (int)((j - T_MIN) / paso_temporal);
+            int indice2 = indice1 + 1;
+            if (indice2 >= n) indice2 = n - 1;
+            
+            double x_medio = j + paso_temporal / 2.0;
+            int indice_medio = (int)((x_medio - T_MIN) / paso_temporal);
+            if (indice_medio >= n) indice_medio = n - 1;
+            
+            double simpson = (muestras[indice1] + 4.0 * muestras[indice_medio] + muestras[indice2]) / 6.0;
+            
+            Fourier[i] += simpson * cexp(-I * omega0 * j) * paso_temporal;
+            Fourier[i + 1] += simpson * cexp(-I * omega1 * j) * paso_temporal;
+            Fourier[i + 2] += simpson * cexp(-I * omega2 * j) * paso_temporal;
+            Fourier[i + 3] += simpson * cexp(-I * omega3 * j) * paso_temporal;
+        }
+    }
+}
+
+void CFT_Trapecio(double complex *Fourier, const double *muestras, const int n, const double paso_temporal) {
+    for (int i = 0; i < n; i += 4) {
+        double omega0 = 2.0 * PI * (i) / (T_MAX - T_MIN);
+        double omega1 = 2.0 * PI * (i + 1) / (T_MAX - T_MIN);
+        double omega2 = 2.0 * PI * (i + 2) / (T_MAX - T_MIN);
+        double omega3 = 2.0 * PI * (i + 3) / (T_MAX - T_MIN);
+        
+        Fourier[i] = 0.0 + 0.0 * I;
+        Fourier[i + 1] = 0.0 + 0.0 * I;
+        Fourier[i + 2] = 0.0 + 0.0 * I;
+        Fourier[i + 3] = 0.0 + 0.0 * I;
+        
+        for (double j = T_MIN; j < T_MAX - paso_temporal; j += paso_temporal) {
+            
+            //i
+            int indice1 = (int)((j - T_MIN) / paso_temporal);
+            int indice2 = indice1 + 1;
+            if (indice2 >= n) indice2 = n - 1;
+            
+            double promedio = (muestras[indice1] + muestras[indice2]) / 2.0;
+            
+            Fourier[i] += promedio * cexp(-I * omega0 * j) * paso_temporal;
+            Fourier[i + 1] += promedio * cexp(-I * omega1 * j) * paso_temporal;
+            Fourier[i + 2] += promedio * cexp(-I * omega2 * j) * paso_temporal;
+            Fourier[i + 3] += promedio * cexp(-I * omega3 * j) * paso_temporal;
+
+        }
+    }
+}
+
+
 //Apartador de archivos de entrada y saluda
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const char * MILLON = "txt/MuestraGenerada.txt"; //una muestra de un millo de elementos 🫨🫨
@@ -304,7 +555,7 @@ const char * SALIDA = "txt/SecuencialDFTOPT.txt"; //salida secuencial (cualquier
 const char * SALIDA2 = "txt/SecuencialDFT2OPT.txt"; //salida secuencial para el caso de 20.000 muestras 😇😇
 const char * SALIDA_CONTINUO = "txt/ContinuoDFTOPT.txt"; //salida continuo 🤯🤯
 const char * SALIDA_CONTINUO2 = "txt/ContinuoDFTOPT2.txt"; //salida continuo 🤯🤯
-const char * SALIDA_CONTINUO2 = "txt/ContinuoDFTOPT3.txt"; //salida continuo 🤯🤯
+const char * SALIDA_CONTINUO3 = "txt/ContinuoDFTOPT3.txt"; //salida continuo 🤯🤯
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -313,7 +564,7 @@ int main (){
     FILE * salida = fopen(SALIDA,"w");
     FILE * salida_cont = fopen(SALIDA_CONTINUO,"w");
     FILE * salida_cont2 = fopen(SALIDA_CONTINUO2,"w");
-    FILE * salida_cont3 = fopen(SALIDA_CONTINUO2,"w");
+    FILE * salida_cont3 = fopen(SALIDA_CONTINUO3,"w");
 
     if (!entrada){
         printf("Error: No se pudo abrir el archivo de entrada\n");
@@ -401,9 +652,27 @@ int main (){
         clock_t fin_cont = clock();
         double tiempo_cont = (double)(fin_cont-inicio_cont)/CLOCKS_PER_SEC;
         fprintf(salida_cont,"%d %lf\n",Tam_Vector_muestras,tiempo_cont);
+
+        clock_t inicio_cont2 = clock();
+        CFT_Simpson(Fourier_cont2,muestras,Tam_Vector_muestras,paso_temporal);
+        clock_t fin_cont2 = clock();
+        double tiempo_cont2 = (double)(fin_cont2-inicio_cont2)/CLOCKS_PER_SEC;
+        fprintf(salida_cont2,"%d %lf\n",Tam_Vector_muestras,tiempo_cont2);
         /*for (int i=0;i<Tam_Vector_muestras;i++){
-            fprintf(salida_cont,"%lf %lf\n",creal(Fourier_cont[i]),cimag(Fourier_cont[i]));
+            fprintf(salida_cont2,"%lf %lf\n",creal(Fourier_cont2[i]),cimag(Fourier_cont2[i]));
         }*/
+
+        
+        clock_t inicio_cont3 = clock();
+        CFT_Trapecio(Fourier_cont3,muestras,Tam_Vector_muestras,paso_temporal);
+        clock_t fin_cont3 = clock();
+        double tiempo_cont3 = (double)(fin_cont3-inicio_cont3)/CLOCKS_PER_SEC;
+        fprintf(salida_cont3,"%d %lf\n",Tam_Vector_muestras,tiempo_cont3);
+        /*for (int i=0;i<Tam_Vector_muestras;i++){
+            fprintf(salida_cont3,"%lf %lf\n",creal(Fourier_cont3[i]),cimag(Fourier_cont3[i]));
+        }*/
+
+
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         free(muestras);

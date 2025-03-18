@@ -1,3 +1,7 @@
 #!/bin/bash
-
-cat txt/ContinuoDFT.txt && cat txt/ContinuoDFTOPT.txt && cat txt/ContinuoDFTMPI.txt
+echo "Secuencial CFT"
+cat txt/ContinuoDFT.txt 
+echo "Secuencial desenrollado CFT"
+cat txt/ContinuoDFTOPT.txt 
+echo "CFT en paralelo (MPI)"
+cat txt/ContinuoDFTMPI.txt

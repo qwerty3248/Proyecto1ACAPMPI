@@ -122,7 +122,7 @@ const char * SALIDA_CONTINUO3 = "txt/ContinuoDFT3.txt"; //salida continuo ðŸ¤¯ðŸ
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main (){
-    FILE * entrada = fopen (FUNCIONA,"r");
+    FILE * entrada = fopen (TREINTAMIL,"r");
     FILE * salida = fopen(SALIDA,"w");
     FILE * salida_cont = fopen(SALIDA_CONTINUO,"w");
     FILE * salida_cont2 = fopen(SALIDA_CONTINUO2,"w");
@@ -214,20 +214,26 @@ int main (){
         clock_t fin_cont = clock();
         double tiempo_cont = (double)(fin_cont-inicio_cont)/CLOCKS_PER_SEC;
         fprintf(salida_cont,"%d %lf\n",Tam_Vector_muestras,tiempo_cont);
-        //printf("Valor paso temporal: %f\n",paso_temporal);
-        clock_t inicio_cont2 = clock();
-        CFT_Simpson(Fourier_cont,muestras,Tam_Vector_muestras,paso_temporal);
-        clock_t fin_cont2 = clock();
-        double tiempo_cont2 = (double)(fin_cont2-inicio_cont2)/CLOCKS_PER_SEC;
-        fprintf(salida_cont,"%d %lf\n",Tam_Vector_muestras,tiempo_cont2);
-        //printf("Valor paso temporal: %f\n",paso_temporal);
-        clock_t inicio_cont3 = clock();
-        CFT_Trapecio(Fourier_cont,muestras,Tam_Vector_muestras,paso_temporal);
-        clock_t fin_cont3 = clock();
-        double tiempo_cont3 = (double)(fin_cont3-inicio_cont3)/CLOCKS_PER_SEC;
-        fprintf(salida_cont,"%d %lf\n",Tam_Vector_muestras,tiempo_cont3);
         /*for (int i=0;i<Tam_Vector_muestras;i++){
             fprintf(salida_cont,"%lf %lf\n",creal(Fourier_cont[i]),cimag(Fourier_cont[i]));
+        }*/
+        //printf("Valor paso temporal: %f\n",paso_temporal);
+        clock_t inicio_cont2 = clock();
+        CFT_Simpson(Fourier_cont2,muestras,Tam_Vector_muestras,paso_temporal);
+        clock_t fin_cont2 = clock();
+        double tiempo_cont2 = (double)(fin_cont2-inicio_cont2)/CLOCKS_PER_SEC;
+        fprintf(salida_cont2,"%d %lf\n",Tam_Vector_muestras,tiempo_cont2);
+        /*for (int i=0;i<Tam_Vector_muestras;i++){
+            fprintf(salida_cont2,"%lf %lf\n",creal(Fourier_cont2[i]),cimag(Fourier_cont2[i]));
+        }*/
+        //printf("Valor paso temporal: %f\n",paso_temporal);
+        clock_t inicio_cont3 = clock();
+        CFT_Trapecio(Fourier_cont3,muestras,Tam_Vector_muestras,paso_temporal);
+        clock_t fin_cont3 = clock();
+        double tiempo_cont3 = (double)(fin_cont3-inicio_cont3)/CLOCKS_PER_SEC;
+        fprintf(salida_cont3,"%d %lf\n",Tam_Vector_muestras,tiempo_cont3);
+        /*for (int i=0;i<Tam_Vector_muestras;i++){
+            fprintf(salida_cont3,"%lf %lf\n",creal(Fourier_cont3[i]),cimag(Fourier_cont3[i]));
         }*/
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
 

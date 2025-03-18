@@ -1,8 +1,12 @@
 import numpy as np
 
+cota_abajo = -1
+cota_arriba = 1
+
+
 def generar_muestra(num_elementos, nombre_archivo):
     # Generar una señal de ejemplo (en este caso una señal aleatoria)
-    muestras = np.random.uniform(-1,1,num_elementos)  # Generamos una señal aleatoria de tamaño 'num_elementos'
+    muestras = np.random.uniform(cota_abajo,cota_arriba,num_elementos)  # Generamos una señal aleatoria de tamaño 'num_elementos'
     
     # Guardar en un archivo
     with open(nombre_archivo, 'w') as file:

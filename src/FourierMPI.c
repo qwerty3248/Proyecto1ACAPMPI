@@ -64,6 +64,49 @@ simplicidad, he supuesto que estos valores son los que tienen mis muestras, adem
     }    
 }*/
 
+//Integral con simpson (2)
+
+/*void CFT_Simpson(double complex *Fourier, const double *muestras, const int n, const double paso_temporal) {
+    for (int i = 0; i < n; i++) {
+        Fourier[i] = 0.0 + 0.0 * I;
+        double omega = 2.0 * PI * i / (T_MAX - T_MIN);
+
+        for (double j = T_MIN; j < T_MAX - paso_temporal; j += paso_temporal) {
+            int indice1 = (int)((j - T_MIN) / paso_temporal);
+            int indice2 = indice1 + 1;
+
+            if (indice2 >= n) indice2 = n - 1;
+
+            double x_medio = j + paso_temporal / 2.0;
+            int indice_medio = (int)((x_medio - T_MIN) / paso_temporal);
+            if (indice_medio >= n) indice_medio = n - 1;
+
+            double simpson = (muestras[indice1] + 4.0 * muestras[indice_medio] + muestras[indice2]) / 6.0;
+
+            Fourier[i] += simpson * cexp(-I * omega * j) * paso_temporal;
+        }
+    }
+}*/
+
+
+//Integral con trapecio (3)
+/*void CFT_Trapecio(double complex *Fourier, const double *muestras, const int n, const double paso_temporal) {
+    for (int i = 0; i < n; i++) {
+        Fourier[i] = 0.0 + 0.0 * I;
+        double omega = 2.0 * PI * i / (T_MAX - T_MIN);
+
+        for (double j = T_MIN; j < T_MAX - paso_temporal; j += paso_temporal) {
+            int indice1 = (int)((j - T_MIN) / paso_temporal);
+            int indice2 = indice1 + 1;
+
+            if (indice2 >= n) indice2 = n - 1; 
+
+            double promedio = (muestras[indice1] + muestras[indice2]) / 2.0;
+            Fourier[i] += promedio * cexp(-I * omega * j) * paso_temporal;
+        }
+    }
+}*/
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Aqui las funciones de nuevo pero para paralelizar 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -139,6 +182,76 @@ void CFT(double complex *Fourier, const double *muestras, const int n, const dou
     free(copia);
 }
 
+void CFT_Trapecio(double complex *Fourier, const double *muestras, const int n, const double paso_temporal,const int rank, const int size) {
+    int local = n / size;
+    if (rank < n % size) {
+        local++;
+    }
+    int comienzo = rank * local;
+    int final = (rank == size - 1) ? n : comienzo + local;    
+    double complex *copia = (double complex *)malloc(sizeof(double complex) * local);
+    if (!copia) {
+        printf("Error: No se pudo asignar memoria para copia\n");
+        exit(1);
+    }
+    for (int i = comienzo; i < final; i++) {
+        copia[i - comienzo] = 0.0 + 0.0 * I;
+        double omega = 2.0 * PI * i / (T_MAX - T_MIN);
+        for (double j = T_MIN; j < T_MAX - paso_temporal; j += paso_temporal) {
+            int indice1 = (int)((j - T_MIN) / paso_temporal);
+            int indice2 = indice1 + 1;
+            if (indice2 >= n) indice2 = n - 1;
+            double promedio = (muestras[indice1] + muestras[indice2]) / 2.0;
+            copia[i - comienzo] += promedio * cexp(-I * omega * j) * paso_temporal;
+        }
+    }
+
+    MPI_Gather(copia, local, MPI_DOUBLE_COMPLEX, Fourier, local, MPI_DOUBLE_COMPLEX, 0, MPI_COMM_WORLD);
+    free(copia);
+
+}
+
+void CFT_Simpson(double complex *Fourier, const double *muestras, const int n, const double paso_temporal,const int rank, const int size) {
+    int local = n / size;
+    if (rank < n % size) {
+        local++;
+    }
+    int comienzo = rank * local;
+    int final = (rank == size - 1) ? n : comienzo + local;
+
+    
+    double complex *copia = (double complex *)malloc(sizeof(double complex) * local);
+
+    if (!copia) {
+        printf("Error: No se pudo asignar memoria para copia\n");
+        exit(1);
+    }
+
+    for (int i = comienzo; i < final; i++) {
+        copia[i - comienzo] = 0.0 + 0.0 * I;
+        double omega = 2.0 * PI * i / (T_MAX - T_MIN);
+        for (double j = T_MIN; j < T_MAX - paso_temporal; j += paso_temporal) {
+            int indice1 = (int)((j - T_MIN) / paso_temporal);
+            int indice2 = indice1 + 1;
+
+            if (indice2 >= n) indice2 = n - 1;
+
+            double x_medio = j + paso_temporal / 2.0;
+            int indice_medio = (int)((x_medio - T_MIN) / paso_temporal);
+            if (indice_medio >= n) indice_medio = n - 1;
+
+            double simpson = (muestras[indice1] + 4.0 * muestras[indice_medio] + muestras[indice2]) / 6.0;
+
+            copia[i - comienzo] += simpson * cexp(-I * omega * j) * paso_temporal;
+        }
+    }
+    //Comunica la copia local a la memoria compartida
+    MPI_Gather(copia, local, MPI_DOUBLE_COMPLEX, Fourier, local, MPI_DOUBLE_COMPLEX, 0, MPI_COMM_WORLD);
+
+    
+    free(copia);
+}
+     
 
 
 //Apartador de archivos de entrada y saluda
@@ -158,7 +271,7 @@ const char * SALIDA = "txt/SecuencialDFTMPI.txt"; //salida secuencial (cualquier
 const char * SALIDA2 = "txt/SecuencialDFT2MPI.txt"; //salida secuencial para el caso de 20.000 muestras 😇😇
 const char * SALIDA_CONTINUO = "txt/ContinuoDFTMPI.txt"; //salida continuo 🤯🤯
 const char * SALIDA_CONTINUO2 = "txt/ContinuoDFTMPI2.txt"; //salida continuo 🤯🤯
-const char * SALIDA_CONTINUO2 = "txt/ContinuoDFTMPI3.txt"; //salida continuo 🤯🤯
+const char * SALIDA_CONTINUO3 = "txt/ContinuoDFTMPI3.txt"; //salida continuo 🤯🤯
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main (){
@@ -170,10 +283,14 @@ int main (){
     MPI_Comm_size(MPI_COMM_WORLD,&size);
     FILE * salida;
     FILE * salida_cont;
+    FILE * salida_cont2;
+    FILE * salida_cont3;
     if (rank == 0){
         //printf("Archivo de salida: %s\n",new_salida);
         salida = fopen(SALIDA,"w");
         salida_cont = fopen(SALIDA_CONTINUO,"w");
+        salida_cont2 = fopen(SALIDA_CONTINUO2,"w");
+        salida_cont3 = fopen(SALIDA_CONTINUO3,"w");
     
         
         if (!salida){
@@ -182,6 +299,16 @@ int main (){
         }
     
         if (!salida_cont){
+            printf("Error: No se pudo abrir el archivo de salida continuo\n");
+            exit(1);
+        }
+
+        if (!salida_cont2){
+            printf("Error: No se pudo abrir el archivo de salida continuo\n");
+            exit(1);
+        }
+
+        if (!salida_cont3){
             printf("Error: No se pudo abrir el archivo de salida continuo\n");
             exit(1);
         }
@@ -204,6 +331,8 @@ int main (){
         double *muestras = malloc(Tam_Vector_muestras*sizeof(double));
         double complex *Fourier = malloc(Tam_Vector_muestras*sizeof(double complex));
         double complex *Fourier_cont = malloc(Tam_Vector_muestras*sizeof(double complex));
+        double complex *Fourier_cont2 = malloc(Tam_Vector_muestras*sizeof(double complex));
+        double complex *Fourier_cont3 = malloc(Tam_Vector_muestras*sizeof(double complex));
         
         
         //printf("Soy el procesador %d y voy a asignar memoria\n",rank);
@@ -219,6 +348,15 @@ int main (){
             exit(1);
         }
         if (!Fourier_cont){
+            printf("Error: No se pudo asignar memoria Fourier\n");
+            exit(1);
+        }
+
+        if (!Fourier_cont2){
+            printf("Error: No se pudo asignar memoria Fourier\n");
+            exit(1);
+        }
+        if (!Fourier_cont3){
             printf("Error: No se pudo asignar memoria Fourier\n");
             exit(1);
         }
@@ -266,10 +404,46 @@ int main (){
                 fprintf(salida_cont,"%lf %lf\n",creal(Fourier_cont[i]),cimag(Fourier_cont[i]));
             }
         }*/
+        //printf("andamos caminando\n");
+        MPI_Barrier(MPI_COMM_WORLD);
+        tiempo_inicial = MPI_Wtime();
+        CFT_Trapecio(Fourier_cont3,muestras,Tam_Vector_muestras,paso_temporal,rank,size);
+        tiempo_final = MPI_Wtime();
+        MPI_Barrier(MPI_COMM_WORLD);
+        if (rank == 0){
+            fprintf(salida_cont3, "%d %lf\n", Tam_Vector_muestras, tiempo_final - tiempo_inicial);
+        }
+        
+        /*if (rank == 0){
+            for (int i=0;i<Tam_Vector_muestras;i++){
+                fprintf(salida_cont3,"%lf %lf\n",creal(Fourier_cont3[i]),cimag(Fourier_cont3[i]));
+            }
+        }*/
+
+        //printf("andamos caminando2\n");
+        MPI_Barrier(MPI_COMM_WORLD);
+        tiempo_inicial = MPI_Wtime();
+        CFT_Simpson(Fourier_cont2,muestras,Tam_Vector_muestras,paso_temporal,rank,size);
+        tiempo_final = MPI_Wtime();
+        MPI_Barrier(MPI_COMM_WORLD);
+        if (rank == 0){
+            fprintf(salida_cont2, "%d %lf\n", Tam_Vector_muestras, tiempo_final - tiempo_inicial);
+        }
+        /*if (rank == 0){
+            for (int i=0;i<Tam_Vector_muestras;i++){
+                fprintf(salida_cont2,"%lf %lf\n",creal(Fourier_cont2[i]),cimag(Fourier_cont2[i]));
+            }
+        }*/
+        
+        
+        
+
         //Todos los procesos liberan memoria
         free(muestras);
         free(Fourier);
         free(Fourier_cont);
+        free(Fourier_cont2);
+        free(Fourier_cont3);
 
     }
 
@@ -277,6 +451,8 @@ int main (){
     if (rank == 0){
         fclose(salida);
         fclose(salida_cont);
+        fclose(salida_cont2);
+        fclose(salida_cont3);
     }
     //Todos los procesos cierran el archivo de entrada porque todos los abren 
     fclose(entrada);
@@ -285,6 +461,8 @@ int main (){
     if (rank == 0){
         printf("Fin del programa, resultados guardados con formato NumeroMuestras Tiempo(Fourier Discreto) en salidaDFTMPI\n");
         printf("Fin del programa, resultados guardados con formato NumeroMuestras Tiempo(Fourier continuo) en salidaCFTMPI\n");
+        printf("Fin del programa, resultados guardados con formato NumeroMuestras Tiempo(Fourier continuo) en salidaCFTMPI2\n");
+        printf("Fin del programa, resultados guardados con formato NumeroMuestras Tiempo(Fourier continuo) en salidaCFTMPI3\n");
     }
     MPI_Finalize();
     return 0;
