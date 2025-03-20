@@ -317,7 +317,7 @@ int main (){
 
     }//Solo quiero que reserve memoria en el 0, este se encargara de escribir, este tendra el fourier
     //Todos abren el archivo de entrada
-    FILE * entrada = fopen (TREINTAMIL,"r");
+    FILE * entrada = fopen (DOSCIENTOSCINCUENTAMIL,"r");
     if (!entrada){
         printf("Error: No se pudo abrir el archivo de entrada\n");
         exit(1);

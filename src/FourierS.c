@@ -122,7 +122,7 @@ const char * SALIDA_CONTINUO3 = "txt/ContinuoDFT3.txt"; //salida continuo ðŸ¤¯ðŸ
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main (){
-    FILE * entrada = fopen (TREINTAMIL,"r");
+    FILE * entrada = fopen (DOSCIENTOSCINCUENTAMIL,"r");
     FILE * salida = fopen(SALIDA,"w");
     FILE * salida_cont = fopen(SALIDA_CONTINUO,"w");
     FILE * salida_cont2 = fopen(SALIDA_CONTINUO2,"w");
